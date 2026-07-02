@@ -1,153 +1,271 @@
 # XOR Neural Network in Rust
 
-A simple feedforward neural network implemented from scratch in Rust without using any machine learning libraries.
+A simple feedforward neural network implemented entirely from scratch in Rust.
 
-This project demonstrates the core concepts of neural networks, including:
-
-- Forward propagation
-- Backpropagation
-- Gradient descent
-- Sigmoid activation
-- Mean Squared Error (MSE) loss
-- Random weight initialization
-- Deterministic dataset generation
-- Smoke testing
+This project demonstrates the complete implementation of a neural network without using any machine learning libraries. It includes forward propagation, backpropagation, gradient descent, dataset generation, evaluation, and automated testing.
 
 ---
 
-## Project Structure
+# Project Objective
+
+The objective of this project is to build a neural network capable of learning the XOR function.
+
+The XOR problem is a classic machine learning problem because it is **not linearly separable**, meaning a single-layer perceptron cannot solve it. A hidden layer is required, making it an excellent demonstration of how neural networks learn nonlinear relationships.
+
+---
+
+# Features
+
+- Pure Rust implementation
+- No external machine learning libraries
+- Two-layer feedforward neural network
+- Sigmoid activation function
+- Mean Squared Error (MSE) loss
+- Backpropagation using gradient descent
+- Deterministic random number generator
+- Automatic XOR dataset generation
+- Model evaluation using accuracy
+- Smoke test verifying successful learning
+
+---
+
+# Project Structure
 
 ```
 src/
-├── activation.rs      # Sigmoid activation function
-├── config.rs          # Training configuration
-├── dataset.rs         # XOR dataset generator
-├── layer.rs           # Dense neural network layer
-├── loss.rs            # Mean Squared Error loss
-├── network.rs         # Neural network implementation
-├── random.rs          # Custom pseudo-random number generator
-├── smoke_test.rs      # End-to-end learning test
-└── main.rs            # Program entry point
+│
+├── activation.rs     # Sigmoid activation function
+├── config.rs         # Training configuration
+├── dataset.rs        # XOR dataset generator
+├── layer.rs          # Dense layer implementation
+├── loss.rs           # Mean Squared Error loss
+├── network.rs        # Neural network implementation
+├── random.rs         # Custom deterministic RNG
+├── smoke_test.rs     # End-to-end learning test
+└── main.rs           # Application entry point
 ```
 
 ---
 
-## Network Architecture
+# Neural Network Architecture
 
 ```
-Input (2)
-      │
-      ▼
-Hidden Layer (8 neurons)
-      │
-      ▼
-Output (1)
+        Input Layer
+      x1          x2
+         \      /
+          \    /
+       Hidden Layer
+      (8 Sigmoid Neurons)
+            |
+            |
+      Output Layer
+      (1 Sigmoid Neuron)
 ```
 
-The network is trained to learn the XOR function.
+Architecture:
+
+- Input Layer: 2 neurons
+- Hidden Layer: 8 neurons
+- Output Layer: 1 neuron
+
+Activation Function:
+
+- Sigmoid
+
+Loss Function:
+
+- Mean Squared Error (MSE)
+
+Optimizer:
+
+- Gradient Descent
 
 ---
 
-## XOR Truth Table
+# Training Process
 
-| Input A | Input B | Output |
-|---------:|---------:|-------:|
-| 0 | 0 | 0 |
-| 0 | 1 | 1 |
-| 1 | 0 | 1 |
-| 1 | 1 | 0 |
+Training follows the standard supervised learning pipeline:
 
----
-
-## Features
-
-- Written entirely in Rust
-- No external machine learning libraries
-- Custom deterministic random number generator
-- Fully connected dense layers
-- Forward propagation
-- Backpropagation
-- Sigmoid activation
-- Mean Squared Error loss
-- Configurable training parameters
-- Smoke test for end-to-end verification
+1. Generate XOR samples.
+2. Perform forward propagation.
+3. Compute prediction error using MSE.
+4. Compute gradients using backpropagation.
+5. Update weights and biases using gradient descent.
+6. Repeat for multiple epochs.
 
 ---
 
-## Building
+# Dataset
 
-```bash
-cargo build
+The dataset is generated programmatically.
+
+Each sample consists of:
+
+```
+Input:  [x1, x2]
+Target: [x1 XOR x2]
 ```
 
+Example:
+
+| Input | Target |
+|--------|--------|
+| 0 0 | 0 |
+| 0 1 | 1 |
+| 1 0 | 1 |
+| 1 1 | 0 |
+
+For training, a large dataset of **50,000 samples** is generated using a deterministic random number generator.
+
 ---
 
-## Running
+# Configuration
 
-```bash
-cargo run
-```
+Default configuration:
 
-Example output:
+| Parameter | Value |
+|------------|------:|
+| Input Size | 2 |
+| Hidden Size | 8 |
+| Dataset Size | 50,000 |
+| Epochs | 100 |
+| Learning Rate | 0.1 |
+| Seed | 42 |
+
+---
+
+# Example Output
 
 ```
 Training...
 
-[Epoch 1/100] Loss: ...
+[Epoch 1/100] Loss: 0.023112
 ...
+[Epoch 100/100] Loss: 0.000003
 
 Training Complete
 
 Accuracy: 100.00%
 
 Sample Predictions:
-Input: [0, 0] -> 0.001
-Input: [0, 1] -> 0.998
-Input: [1, 0] -> 0.998
-Input: [1, 1] -> 0.002
+
+Input: [0.0, 0.0] -> Prediction: 0.0013
+Input: [0.0, 1.0] -> Prediction: 0.9985
+Input: [1.0, 0.0] -> Prediction: 0.9984
+Input: [1.0, 1.0] -> Prediction: 0.0020
 ```
 
 ---
 
-## Running Tests
+# Smoke Test
 
-Run all tests:
+A smoke test is included to verify that the entire neural network pipeline functions correctly.
+
+The test:
+
+- Generates an XOR dataset
+- Trains the neural network
+- Evaluates the trained model
+- Asserts at least **99% accuracy**
+
+Run the tests with:
 
 ```bash
 cargo test
 ```
 
-Run the smoke test with training output:
+Expected output:
 
-```bash
-cargo test -- --nocapture
+```
+running 1 test
+test smoke_test::smoke_test_xor_learning ... ok
+
+test result: ok
 ```
 
 ---
 
-## Learning Process
+# Running the Project
 
-The network learns by repeating the following steps:
+Clone the repository:
 
-1. Generate an XOR sample.
-2. Perform a forward pass.
-3. Compute the Mean Squared Error.
-4. Compute the loss gradient.
-5. Perform backpropagation.
-6. Update weights and biases using gradient descent.
-7. Repeat for every epoch until the loss converges.
+```bash
+git clone <repository-url>
+```
+
+Navigate to the project:
+
+```bash
+cd xor_nn
+```
+
+Build:
+
+```bash
+cargo build
+```
+
+Run:
+
+```bash
+cargo run
+```
+
+Run tests:
+
+```bash
+cargo test
+```
 
 ---
 
-## Technologies
+# Learning Concepts Demonstrated
 
-- Rust
-- Cargo
+This project demonstrates the implementation of several fundamental machine learning concepts:
+
+- Feedforward Neural Networks
+- Dense (Fully Connected) Layers
+- Forward Propagation
+- Sigmoid Activation Function
+- Mean Squared Error (MSE)
+- Backpropagation
+- Gradient Descent
+- Weight Initialization
+- Bias Updates
+- Dataset Generation
+- Model Evaluation
+- Deterministic Random Number Generation
 
 ---
 
-## Author
+# Design Decisions
 
-Betsinat Amare
+Several design choices were made to improve readability and maintainability:
 
-Developed as a neural network implementation project in Rust.
+- Each responsibility is separated into its own module.
+- Layers manage their own forward and backward propagation.
+- Input and output values are cached for backpropagation.
+- Assertions validate input dimensions.
+- Deterministic random initialization ensures reproducible training.
+- Comprehensive inline documentation explains major components.
+
+
+---
+
+# Future Improvements
+
+Possible extensions include:
+
+- Additional activation functions (ReLU, Tanh)
+- Cross-Entropy loss
+- Mini-batch gradient descent
+- Multiple hidden layers
+- Model serialization
+- Generic matrix implementation
+- Parallelized training
+- Configurable optimizers (Momentum, Adam)
+
+---
+
+
+Developed as a Rust machine learning project demonstrating a complete implementation of a feedforward neural network trained on the XOR problem without external ML frameworks.
